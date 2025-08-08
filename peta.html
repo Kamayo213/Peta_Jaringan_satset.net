@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Peta Jaringan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <div id="navbar">
+    <span id="menu-title">Peta Jaringan</span>
+    <button onclick="logout()">Logout</button>
+    <button onclick="showForm('odc')">Tambah ODC</button>
+    <button onclick="showForm('odp')">Tambah ODP</button>
+    <button onclick="showForm('kabel')">Tambah Kabel</button>
+    <button onclick="showProfile()">Profil</button>
+  </div>
+
+  <div id="map"></div>
+
+  <!-- Form Tambah Data -->
+  <div id="form-container" class="hidden">
+    <h3 id="form-title">Tambah Data</h3>
+    <form id="data-form">
+      <!-- Form dinamis diisi via JavaScript -->
+    </form>
+    <button onclick="submitData()">Simpan</button>
+    <button onclick="hideForm()">Batal</button>
+  </div>
+
+  <!-- Popup Profil -->
+  <div id="profile-popup" class="hidden">
+    <h3>Profil Pengguna</h3>
+    <p>Email: <span id="user-email"></span></p>
+    <p>Role: <span id="user-role"></span></p>
+    <button onclick="closeProfile()">Tutup</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
