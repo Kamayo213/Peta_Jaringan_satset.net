@@ -1,4 +1,3 @@
-// URL Web App Google Apps Script - Ganti dengan milikmu
 const API_URL = 'https://script.google.com/macros/s/AKfycbzQM25ji6WzYsb9OFLvb5JcvALnwcQLaTiRYRmgodiuxHgiDkQpGAH4-Y8YPnW1CaITMg/exec';
 
 // Cek login dan role
@@ -46,7 +45,7 @@ async function loadNetworkData() {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'getNetworkData' }),
+      body: JSON.stringify({ mode: 'getAll' }),
     });
     const data = await res.json();
 
@@ -131,108 +130,4 @@ function renderMap(data) {
     line.bindPopup(
       `<b>Kabel:</b> ${kabel['Nama Kabel']}<br>` +
       `<b>Jumlah Core:</b> ${kabel['Jumlah Core']}<br>` +
-      `<b>Core Terpakai:</b> ${kabel['Core Terpakai']}<br>` +
-      `<b>Dari:</b> ${kabel.Dari}<br>` +
-      `<b>Ke:</b> ${kabel.Ke}<br>` +
-      `<b>Keterangan:</b> ${kabel.Keterangan}`
-    );
-  });
-}
-
-function findCoord(id, list) {
-  const item = list.find(i => i.ID === id);
-  if (!item) return null;
-  return [+item.Latitude, +item.Longitude];
-}
-
-// Form tambah data
-const formContainer = document.getElementById('formContainer');
-const dataForm = document.getElementById('dataForm');
-const formTitle = document.getElementById('formTitle');
-let currentAddType = null;
-
-document.getElementById('btnTambahODC').addEventListener('click', () => {
-  currentAddType = 'ODC';
-  showForm('ODC');
-});
-document.getElementById('btnTambahODP').addEventListener('click', () => {
-  currentAddType = 'ODP';
-  showForm('ODP');
-});
-document.getElementById('btnTambahKabel').addEventListener('click', () => {
-  currentAddType = 'KABEL';
-  showForm('KABEL');
-});
-
-function showForm(type) {
-  formContainer.classList.remove('hidden');
-  formTitle.textContent = `Tambah ${type}`;
-
-  let html = '';
-  if (type === 'ODC' || type === 'ODP') {
-    html += `
-      <label>ID (unik): <input type="text" name="ID" required /></label>
-      <label>Nama: <input type="text" name="Nama" required /></label>
-      <label>Latitude: <input type="number" step="any" name="Latitude" required /></label>
-      <label>Longitude: <input type="number" step="any" name="Longitude" required /></label>
-      <label>Total Port: <input type="number" name="Total Port" required /></label>
-      <label>Terpakai: <input type="number" name="Terpakai" required /></label>
-      <label>Keterangan: <input type="text" name="Keterangan" /></label>
-    `;
-  } else if (type === 'KABEL') {
-    let options = networkData.odc.concat(networkData.odp)
-      .map(n => `<option value="${n.ID}">${n.Nama} (${n.ID})</option>`).join('');
-    html += `
-      <label>ID (unik): <input type="text" name="ID" required /></label>
-      <label>Nama Kabel: <input type="text" name="Nama Kabel" required /></label>
-      <label>Jumlah Core: <input type="number" name="Jumlah Core" required /></label>
-      <label>Core Terpakai: <input type="number" name="Core Terpakai" required /></label>
-      <label>Dari: <select name="Dari" required>${options}</select></label>
-      <label>Ke: <select name="Ke" required>${options}</select></label>
-      <label>Keterangan: <input type="text" name="Keterangan" /></label>
-    `;
-  }
-  html += `<button type="submit">Simpan</button>`;
-  dataForm.innerHTML = html;
-}
-
-dataForm.addEventListener('submit', async e => {
-  e.preventDefault();
-
-  const formData = new FormData(dataForm);
-  const obj = {};
-  formData.forEach((v, k) => obj[k] = v);
-
-  // Cek ID unik
-  const listKey = currentAddType.toLowerCase();
-  const exists = networkData[listKey]?.some(d => d.ID === obj.ID);
-  if (exists) {
-    alert('ID sudah ada, gunakan ID lain.');
-    return;
-  }
-
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'addData',
-        sheetName: currentAddType,
-        data: obj,
-      }),
-    });
-    const result = await res.json();
-    if (result.success) {
-      alert(`${currentAddType} berhasil ditambahkan!`);
-      formContainer.classList.add('hidden');
-      loadNetworkData();
-    } else {
-      alert('Gagal tambah data: ' + result.msg);
-    }
-  } catch (error) {
-    alert('Error tambah data: ' + error.message);
-  }
-});
-
-// Load data pertama kali
-loadNetworkData();
+      `<b
