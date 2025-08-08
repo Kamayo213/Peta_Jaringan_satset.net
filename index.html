@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Peta Jaringan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button onclick="login()">Login</button>
+    <p id="error"></p>
+  </div>
+
+  <script>
+    let attempts = 0;
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      google.script.run.withSuccessHandler(function(response) {
+        if (response.success) {
+          localStorage.setItem("loginStatus", "loggedIn");
+          localStorage.setItem("userRole", response.role);
+          window.location.href = "app.html";
+        } else {
+          attempts++;
+          document.getElementById('error').innerText = "Password salah.";
+          if (attempts >= 3) {
+            document.getElementById('error').innerHTML = 'Lupa sandi? Hubungi admin untuk reset via email.';
+          }
+        }
+      }).login(email, password);
+    }
+  </script>
+</body>
+</html>
