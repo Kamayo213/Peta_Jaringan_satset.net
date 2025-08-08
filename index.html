@@ -11,27 +11,36 @@
     <input type="email" id="email" placeholder="Email"><br>
     <input type="password" id="password" placeholder="Password"><br>
     <button onclick="login()">Login</button>
-    <p id="error-msg"></p>
+    <p id="error-msg" style="color:red;"></p>
   </div>
 
   <script>
     async function login() {
-      const email = document.getElementById('email').value;
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
-      const res = await fetch(
-        'https://script.google.com/macros/s/AKfycbzQM25ji6WzYsb9OFLvb5JcvALnwcQLaTiRYRmgodiuxHgiDkQpGAH4-Y8YPnW1CaITMg/exec', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, mode: 'login' }),
-      });
+      try {
+        const res = await fetch(
+          'https://script.google.com/macros/s/AKfycbzQM25ji6WzYsb9OFLvb5JcvALnwcQLaTiRYRmgodiuxHgiDkQpGAH4-Y8YPnW1CaITMg/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password, mode: 'login' }),
+        });
 
-      const result = await res.json();
-      if (result.success) {
-        localStorage.setItem('loginStatus', 'loggedIn');
-        localStorage.setItem('role', result.role);
-        window.location.href = 'peta.html';
-      } else {
-        document.getElementById('error-msg').innerText = "Email atau password salah.";
+        const result = await res.json();
+
+        if (result.success) {
+          localStorage.setItem('loginStatus', 'loggedIn');
+          localStorage.setItem('role', result.role);
+          window.location.href = 'peta.html';
+        } else {
+          document.getElementById('error-msg').innerText = "Email atau password salah.";
+        }
+      } catch (error) {
+        document.getElementById('error-msg').innerText = "Terjadi kesalahan koneksi.";
+        console.error(error);
       }
     }
   </script>
